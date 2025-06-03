@@ -1,0 +1,114 @@
+# Xcode
+#
+# gitignore file for Swift/SwiftUI iOS projects
+
+# User settings
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+
+# Build generated
+build/
+DerivedData/
+*.o
+*.linkfilelist
+*.sym
+
+# Index
+*.ipa
+*.xcarchive
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# Swift Package Manager
+.build/
+Package.resolved
+.swiftpm/
+# Package local artifacts
+.swiftpm/xcode/ # SPM integration in Xcode 12+
+
+# CocoaPods
+Pods/
+# Include the following if using CocoaPods with frameworks (optional):
+# /Pods/**/Manifest.lock
+
+# Carthage
+Carthage/Build/
+
+# Accio dependency manager
+Dependencies/
+.accio/
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Xcode 8 and earlier
+*.moved-aside
+*.pbxuser
+!default.mode1v3
+!default.mode2v3
+!default.pbxuser
+# Xcode 9 and later
+*.xcworkspace
+!default.xcworkspace
+# Shared workspace schemes
+xcshareddata/
+xcshareddata/WorkspaceSettings.xcsettings
+
+# Index
+*.xccheckout
+*.xcuserstate
+
+# SwiftUI Previews
+.swift-version
+*.swiftpm
+
+# Documentation
+*.docc
+
+# Third-party dependencies
+# Uncomment if you want to ignore Carthage/Checkouts and Carthage/Build
+# Carthage/Checkouts
+# Carthage/Build
+
+# SPM Cache
+# .build/
+
+# Misc
+.DS_Store
+*.swp
+*.lock
+
+# Certificates, keys, provisioning profiles
+*.cer
+*.p12
+*.mobileprovision
+
+# Xcode derived data (alternative paths)
+~/Library/Developer/Xcode/DerivedData/
+
+# Temporary files
+*.tmp
+*.temp
+
+# App Packaging
+*.app.dSYM.zip
+*.dSYM.zip
+*.dSYM
+
+# Playground auxiliary files
+timeline.xctimeline
+playground.xcodeproj/project.xcworkspace/xcuserdata/
+
+# SwiftPM local snapshot checkout
+.revisions
+
+# SwiftLint cache
+.swiftlint.yml
+
+# End of gitignore
