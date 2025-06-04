@@ -46,9 +46,27 @@
 		E4EDE50E2DEEFEF400AFD80D /* PulsePlayerTVUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PulsePlayerTVUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		E49B64D22DF0688300B5CCD0 /* Exceptions for "PulsePlayer" folder in "PulsePlayerTV" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Models/VideoItem.swift,
+				Resources/library_live.json,
+				Resources/library.json,
+				Views/Ads/VideoDataLoader.swift,
+				Views/Ads/VideoListView.swift,
+				Views/Ads/VideoPlayerView.swift,
+			);
+			target = E4EDE4F42DEEFEF000AFD80D /* PulsePlayerTV */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E4EDE4C62DEEFE4900AFD80D /* PulsePlayer */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E49B64D22DF0688300B5CCD0 /* Exceptions for "PulsePlayer" folder in "PulsePlayerTV" target */,
+			);
 			path = PulsePlayer;
 			sourceTree = "<group>";
 		};
