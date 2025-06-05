@@ -8,9 +8,11 @@
 import Foundation
 
 struct VideoItem :  Codable, Identifiable {
+    var id = UUID()
+    
     let tags: [String]?
     let contentTitle: String
-    let id: String
+    let contentId: String
     let midrollPositions: [Int]?
     let contentDuration: Int?
     let contentUrl: String?
@@ -18,7 +20,7 @@ struct VideoItem :  Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case tags
         case contentTitle = "content-title"
-        case id = "content-id"
+        case contentId = "content-id"
         case midrollPositions = "midroll-positions"
         case contentDuration = "content-duration"
         case contentUrl = "content-url"

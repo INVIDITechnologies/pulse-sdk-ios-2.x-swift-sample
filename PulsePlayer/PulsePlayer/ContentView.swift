@@ -12,9 +12,12 @@ struct ContentView: View {
     @State private var videos = [VideoItem]()
     
     var body: some View {
+        
         VStack {
             List(videos) { video in
-                HStack(spacing: 20) {
+                NavigationLink {
+                    VideoPlayerView(videoItem: video)
+                } label: {
                     Text(video.contentTitle)
                 }
             }
