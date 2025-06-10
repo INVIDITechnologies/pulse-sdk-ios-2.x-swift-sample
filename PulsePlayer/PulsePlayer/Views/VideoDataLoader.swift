@@ -6,8 +6,8 @@
 import Foundation
 
 enum VideoType: String, CaseIterable, Identifiable {
-    case vod  = "VOD"
     case live = "Live"
+    case vod  = "VOD"
 
     var id: String { rawValue }
     var fileName: String {

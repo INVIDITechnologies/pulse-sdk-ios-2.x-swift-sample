@@ -55,7 +55,8 @@
 				Resources/library.json,
 				Views/VideoDataLoader.swift,
 				Views/VideoListView.swift,
-				Views/VideoPlayerView.swift,
+				Views/VideoPlayerLiveView.swift,
+				Views/VideoPlayerVodView.swift,
 			);
 			target = E4EDE4F42DEEFEF000AFD80D /* PulsePlayerTV */;
 		};

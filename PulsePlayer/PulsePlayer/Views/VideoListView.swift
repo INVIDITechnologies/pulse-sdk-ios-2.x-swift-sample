@@ -7,7 +7,7 @@ import SwiftUI
 
 struct VideoListView: View {
     @State private var videos = [VideoItem]()
-    @State private var selectedType: VideoType = .vod
+    @State private var selectedType: VideoType = .live
     
     var body: some View {
         NavigationView {
@@ -21,7 +21,9 @@ struct VideoListView: View {
                 .padding()
                 
                 List(videos) { video in
-                    NavigationLink(destination: VideoPlayerView(video: video)) {
+                    NavigationLink(
+                        destination: destinationView(for: video)
+                    ) {
                         Text(video.contentTitle)
                     }
                 }
@@ -35,7 +37,17 @@ struct VideoListView: View {
             videos = VideoDataManager.loadVideos(for: selectedType)
         }
     }
+    
+    @ViewBuilder
+    private func destinationView(for video: VideoItem) -> some View {
+        if selectedType == .vod {
+            VideoPlayerVodView(video: video)
+        } else {
+            VideoPlayerLiveView(video: video)
+        }
+    }
 }
+
 
 #Preview {
     VideoListView()
