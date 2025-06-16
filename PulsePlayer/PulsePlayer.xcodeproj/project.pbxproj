@@ -50,6 +50,7 @@
 		E75BE4DE2DF1B78C008F8F66 /* Exceptions for "PulsePlayer" folder in "PulsePlayerTV" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Frameworks/TVOS/Pulse_tvOS.xcframework,
 				Models/VideoItem.swift,
 				Resources/library_live.json,
 				Resources/library.json,
@@ -60,12 +61,20 @@
 			);
 			target = E4EDE4F42DEEFEF000AFD80D /* PulsePlayerTV */;
 		};
+		E7D92A822DFC13E90037F0EC /* Exceptions for "PulsePlayer" folder in "PulsePlayer" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Frameworks/TVOS/Pulse_tvOS.xcframework,
+			);
+			target = E4EDE4C32DEEFE4900AFD80D /* PulsePlayer */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E4EDE4C62DEEFE4900AFD80D /* PulsePlayer */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				E7D92A822DFC13E90037F0EC /* Exceptions for "PulsePlayer" folder in "PulsePlayer" target */,
 				E75BE4DE2DF1B78C008F8F66 /* Exceptions for "PulsePlayer" folder in "PulsePlayerTV" target */,
 			);
 			path = PulsePlayer;
