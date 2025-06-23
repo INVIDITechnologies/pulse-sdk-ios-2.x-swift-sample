@@ -46,7 +46,18 @@ struct VideoPlayerLiveView: View {
                 controlButton(title: "Prepare Ads for next break", action:  viewModel.handleAdBreakClick)
                 controlButton(title: "Play Ads", action: viewModel.handlePlayAdClick)
                 controlButton(title: "Extend Session", action: viewModel.handleExtendSessionClick)
-                controlButton(title: "Skip Ad", action: viewModel.handleSkipAdClick)
+                if viewModel.isShowingSkip {
+                                    Button(action: viewModel.handleSkipAdClick) {
+                                        Text(viewModel.skipButtonTitle)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .padding(.horizontal)
+                                            .padding(.vertical, 8)
+                                            .background(Color.white.opacity(0.8))
+                                            .foregroundColor(Color.black)
+                                            .cornerRadius(4)
+                                    }
+                                    .disabled(!viewModel.skipEnabled)
+                                }
             }
         }
         .padding()
@@ -68,6 +79,11 @@ struct VideoPlayerLiveView: View {
 
 class PlayerViewModel: NSObject, ObservableObject, OOPulseSessionDelegate {
     @Published var player: AVPlayer?
+    @Published var skipButtonTitle = ""
+    @Published var isShowingSkip = false
+    @Published var skipEnabled = false
+    
+    var adTimer: AnyCancellable?
     var playerItem: AVPlayerItem?
     var timeControlStatusObserver: NSKeyValueObservation?
     var cancellables = Set<AnyCancellable>()
@@ -149,6 +165,11 @@ class PlayerViewModel: NSObject, ObservableObject, OOPulseSessionDelegate {
     
     func handleSkipAdClick() {
         print("Skip ad clicked")
+        guard skipEnabled, let ad = videoAd else { return }
+                ad.adSkipped()
+                cleanupSkipState()
+
+                // here move to next ad media
     }
     
     // Player Events
@@ -180,12 +201,59 @@ class PlayerViewModel: NSObject, ObservableObject, OOPulseSessionDelegate {
     
     func startAdPlayback(with ad: (any OOPulseVideoAd)!, timeout: TimeInterval) {
         print("startAdPlayback from delegate")
+        
+        videoAd = ad
+        let offset = ad.skipOffset
+        isShowingSkip = true
+        skipEnabled = false
+        updateSkipTitle(remaining: Int(offset()))
+
+        // check any existing timer
+        adTimer?.cancel()
+
+        // Start countdown timer
+        adTimer = Timer.publish(every: 1, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.skipAdCountdown()
+            }
     }
     
     func sessionEnded() {
         print("sessionEnded from delegate")
     }
     
+    private func skipAdCountdown() {
+        guard let ad = videoAd,
+              let currentTime = player?.currentTime().seconds else { return }
+
+        let remaining = Int(ad.skipOffset() - currentTime)
+
+        if remaining > 0 {
+            updateSkipTitle(remaining: remaining)
+        } else {
+            enableSkip()
+        }
+    }
+    
+    private func updateSkipTitle(remaining: Int) {
+        skipButtonTitle = "Skip ad in \(remaining)s"
+    }
+
+    private func enableSkip() {
+        skipEnabled = true
+        skipButtonTitle = "Skip ad"
+        adTimer?.cancel()
+    }
+    
+    private func cleanupSkipState() {
+        isShowingSkip = false
+        skipEnabled = false
+        skipButtonTitle = ""
+        adTimer?.cancel()
+        videoAd = nil
+    }
+
     func illegalOperationOccurredWithError(_ error: (any Error)!) {
         print("illegalOperationOccurredWithError from delegate")
     }
