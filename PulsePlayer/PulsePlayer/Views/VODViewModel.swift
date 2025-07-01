@@ -137,7 +137,7 @@ class VODViewModel: NSObject, ObservableObject, OOPulseSessionDelegate {
         ooContentMetadata!.identifier = video.contentId
         // RequestSettings configuration
         ooRequestSettings = OORequestSettings()
-        ooRequestSettings!.userAgentForThirdPartyRequests = OOUserAgentFormat.IAB
+//        ooRequestSettings!.userAgentForThirdPartyRequests = OOUserAgentFormat.IAB
         ooRequestSettings!.linearPlaybackPositions = video.midrollPositions
         //Pulse Host setup and Session trigger.
         OOPulse.setPulseHost("https://pulse-demo.videoplaza.tv",deviceContainer: nil, persistentId: nil)

@@ -47,7 +47,7 @@ struct VideoPlayerLiveView: View {
         VStack {
             Spacer()
             VStack(alignment: .leading, spacing: 12) {
-                controlButton(title: "Prepare Ads for next break", action:  liveViewModel.handleAdBreakClick)
+                controlButton(title: "Prepare Ads for next break", action:  liveViewModel.handlePreapareAdsClick)
                 controlButton(title: "Play Ads", action: liveViewModel.handlePlayAdClick)
                 controlButton(title: "Extend Session", action: liveViewModel.handleExtendSessionClick)
                 if liveViewModel.isShowingSkip {
@@ -69,7 +69,7 @@ struct VideoPlayerLiveView: View {
                 .foregroundColor(Color.black)
                 .cornerRadius(4)
         }
-        .disabled(!liveViewModel.skipEnabled)
+//        .disabled(!liveViewModel.skipEnabled)
     }
 }
 
