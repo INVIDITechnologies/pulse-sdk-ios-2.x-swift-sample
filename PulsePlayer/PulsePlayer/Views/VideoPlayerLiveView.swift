@@ -48,11 +48,13 @@ struct VideoPlayerLiveView: View {
             Spacer()
             VStack(alignment: .leading, spacing: 12) {
                 controlButton(title: "Prepare Ads for next break", action:  liveViewModel.handlePreapareAdsClick)
-                controlButton(title: "Play Ads", action: liveViewModel.handlePlayAdClick)
+                if liveViewModel.isShowingPlayingAd {
+                    controlButton(title: "Play Ads", action: liveViewModel.handlePlayAdClick)
+                }
                 controlButton(title: "Extend Session", action: liveViewModel.handleExtendSessionClick)
                 if liveViewModel.isShowingSkip {
-                                    controlButton(title: liveViewModel.skipButtonTitle, action: liveViewModel.handleSkipAdClick)
-                                                }
+                     controlButton(title: liveViewModel.skipButtonTitle, action: liveViewModel.handleSkipAdClick)
+                }
             }
         }
         .padding()

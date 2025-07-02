@@ -54,10 +54,12 @@
 				Models/VideoItem.swift,
 				Resources/library_live.json,
 				Resources/library.json,
+				Views/LiveViewModel.swift,
 				Views/VideoDataLoader.swift,
 				Views/VideoListView.swift,
 				Views/VideoPlayerLiveView.swift,
 				Views/VideoPlayerVodView.swift,
+				Views/VODViewModel.swift,
 			);
 			target = E4EDE4F42DEEFEF000AFD80D /* PulsePlayerTV */;
 		};
@@ -65,6 +67,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Frameworks/TVOS/Pulse_tvOS.xcframework,
+				Info.plist,
 			);
 			target = E4EDE4C32DEEFE4900AFD80D /* PulsePlayer */;
 		};
@@ -619,6 +622,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"PulsePlayer/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PulsePlayer/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -647,6 +651,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"PulsePlayer/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PulsePlayer/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -743,6 +748,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"PulsePlayerTV/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PulsePlayerTV/Info.plist;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -770,6 +776,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"PulsePlayerTV/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PulsePlayerTV/Info.plist;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
 				LD_RUNPATH_SEARCH_PATHS = (

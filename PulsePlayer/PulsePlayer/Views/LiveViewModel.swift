@@ -42,6 +42,7 @@ class LiveViewModel: NSObject, ObservableObject, INPulseLiveSessionDelegate {
     var videoItem: VideoItem?
     @Published var skipButtonTitle = ""
     @Published var isShowingSkip = false
+    @Published var isShowingPlayingAd = true
     @Published var skipEnabled = false
     var playbackPosition : Array = [Float()]
     var extendedPlaybackPositions : Array = [Float()]
@@ -79,6 +80,7 @@ class LiveViewModel: NSObject, ObservableObject, INPulseLiveSessionDelegate {
                 playbackPosition.append(Float(video.midrollPositions![i]))
             }
         }
+//        ooRequestSettings!.userAgentForThirdPartyRequests = OOUserAgentFormat.IAB
         ooRequestSettings!.linearPlaybackPositions = video.midrollPositions
         //Pulse Host setup and Session trigger.
         OOPulse.setPulseHost("https://pulse-demo.videoplaza.tv",deviceContainer: nil, persistentId: nil)
@@ -118,6 +120,7 @@ class LiveViewModel: NSObject, ObservableObject, INPulseLiveSessionDelegate {
                 // Play Fetched Ad fro AdBreak.
                 playAdContent()
                 mAdBreaks.remove(at: 0)
+                isShowingPlayingAd = false
             } else {
                 print("No ads to show.")
             }
@@ -135,9 +138,10 @@ class LiveViewModel: NSObject, ObservableObject, INPulseLiveSessionDelegate {
         // RequestSettings configuration
         var updatedRequestSettings: OORequestSettings?
         var newPlaybackPositions : Array = [Float()]
-        updatedRequestSettings?.linearPlaybackPositions = videoItem?.midrollPositions
+//        updatedRequestSettings?.userAgentForThirdPartyRequests = OOUserAgentFormat.IAB
         newPlaybackPositions.append(!playbackPosition.isEmpty ? (playbackPosition.last! + 30) : 30)
         newPlaybackPositions.append(!playbackPosition.isEmpty ? (playbackPosition.last! + 60) : 60)
+        newPlaybackPositions.removeFirst()
         updatedRequestSettings?.linearPlaybackPositions = newPlaybackPositions
         extendedPlaybackPositions = newPlaybackPositions
         updatedRequestSettings?.insertionPointFilter = OOInsertionPointType.playbackPosition
@@ -261,6 +265,7 @@ class LiveViewModel: NSObject, ObservableObject, INPulseLiveSessionDelegate {
         playAd = false
         duringAd = false
         duringContent = true
+        isShowingPlayingAd = true
         stopAdProgressTracking()
         cleanupSkipState()
         initializePlayer()
@@ -360,6 +365,7 @@ class LiveViewModel: NSObject, ObservableObject, INPulseLiveSessionDelegate {
             // Skip Ad trigger logic
             let offset = currentPulseVideoAd!.skipOffset
             isShowingSkip = true
+            isShowingPlayingAd = false
             skipEnabled = false
             updateSkipTitle(remaining: Int(offset()))
     }
