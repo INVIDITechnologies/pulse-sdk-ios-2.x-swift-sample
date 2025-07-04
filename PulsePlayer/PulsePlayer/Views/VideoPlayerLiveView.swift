@@ -74,7 +74,6 @@ struct VideoPlayerLiveView: View {
                 .background(Color.white.opacity(0.8))
                 .foregroundColor(Color.black)
                 .cornerRadius(4)
-                .focusable()
         }
         .disabled(!liveViewModel.skipEnabled)
     }
