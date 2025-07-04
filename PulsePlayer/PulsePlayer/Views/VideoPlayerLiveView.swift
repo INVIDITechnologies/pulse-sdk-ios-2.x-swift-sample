@@ -63,6 +63,9 @@ struct VideoPlayerLiveView: View {
         }
         .padding()
         .padding(.bottom, 40)
+        #if os(tvOS)
+        .focusSection()
+        #endif
     }
  
     private func controlButton(title: String, action: @escaping () -> Void) -> some View {
