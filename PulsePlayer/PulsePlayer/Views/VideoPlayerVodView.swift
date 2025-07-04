@@ -30,7 +30,7 @@ struct VideoPlayerVodView: View {
     private var videoPlayerView: some View {
         Group {
             if let player = vodViewModel.player {
-                VideoPlayer(player: player)
+                AVPlayerControllerVod(player: player, vodViewModel: vodViewModel)
                     .onAppear {
 //                        vodViewModel.observePlayerReady()
                     }
@@ -71,3 +71,18 @@ struct VideoPlayerVodView: View {
     }
 }
 
+struct AVPlayerControllerVod : UIViewControllerRepresentable {
+    var player : AVPlayer
+    var vodViewModel = VODViewModel()
+    
+    func makeUIViewController(context: Context) -> AVPlayerViewController {
+        let controller = AVPlayerViewController()
+        controller.player = player
+        controller.showsPlaybackControls = false
+        return controller
+    }
+    
+    func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {
+        vodViewModel.playerController(uiViewController)
+    }
+}

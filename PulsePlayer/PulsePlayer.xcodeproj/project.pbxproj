@@ -71,6 +71,13 @@
 			);
 			target = E4EDE4C32DEEFE4900AFD80D /* PulsePlayer */;
 		};
+		E7F683552E16928B00B978C0 /* Exceptions for "PulsePlayerTV" folder in "PulsePlayerTV" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = E4EDE4F42DEEFEF000AFD80D /* PulsePlayerTV */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -95,6 +102,9 @@
 		};
 		E4EDE4F62DEEFEF000AFD80D /* PulsePlayerTV */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E7F683552E16928B00B978C0 /* Exceptions for "PulsePlayerTV" folder in "PulsePlayerTV" target */,
+			);
 			path = PulsePlayerTV;
 			sourceTree = "<group>";
 		};
@@ -748,6 +758,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"PulsePlayerTV/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PulsePlayerTV/Info.plist;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -775,6 +786,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"PulsePlayerTV/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PulsePlayerTV/Info.plist;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
 				LD_RUNPATH_SEARCH_PATHS = (

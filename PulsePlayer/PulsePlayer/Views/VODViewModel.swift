@@ -41,6 +41,7 @@ class VODViewModel: NSObject, ObservableObject, OOPulseSessionDelegate {
     @Published var skipButtonTitle = ""
     @Published var isShowingSkip = false
     @Published var skipEnabled = false
+    var uiViewController: AVPlayerViewController?
     
     
     var timeObserverToken: Any?
@@ -51,12 +52,28 @@ class VODViewModel: NSObject, ObservableObject, OOPulseSessionDelegate {
        }
     
     // Player initialized
-    func initializePlayer() {
+    func initializePlayer(playerItem: AVPlayerItem) {
+        if(player != nil) {
+            player?.replaceCurrentItem(with: playerItem)
+        } else {
+            player = AVPlayer(playerItem: playerItem)
+        }
         player!.play()
-//        startObserving()
+        
+        stopObserving()
+        startPositinChangeListener()
         if(playVideo) {
             seek(to: CMTime(seconds: currentContentProgress, preferredTimescale: 60000))
         }
+        if(duringContent) {
+            uiViewController?.showsPlaybackControls = true
+        } else {
+            uiViewController?.showsPlaybackControls = false
+        }
+    }
+    
+    func playerController(_ uiViewController: AVPlayerViewController) {
+        self.uiViewController = uiViewController
     }
     
     // Player Observer
@@ -144,7 +161,6 @@ class VODViewModel: NSObject, ObservableObject, OOPulseSessionDelegate {
             OOPulse.logDebugMessages(true)
             session = OOPulse.session(with: ooContentMetadata, requestSettings: ooRequestSettings)
             session?.start(with: self)
-        
 //        startObserving()
     }
     
@@ -226,10 +242,7 @@ class VODViewModel: NSObject, ObservableObject, OOPulseSessionDelegate {
         duringContent = true
         playVideo = true
         playerItem = AVPlayerItem(url: url)
-        player = AVPlayer(playerItem: playerItem)
-//        player?.play()
-        initializePlayer()
-        startPositinChangeListener()
+        initializePlayer(playerItem: playerItem!)
     }
     
     func playAdContent(videoAd: OOPulseVideoAd, timeout: TimeInterval) {
@@ -241,12 +254,12 @@ class VODViewModel: NSObject, ObservableObject, OOPulseSessionDelegate {
             adPaused = false
             return
         }
+        duringAd = true
         duringContent = false
         playAd = true
         print("Ad URL to play: \(String(describing: mediaFile.url()))")
         playerItem = AVPlayerItem(url: mediaFile.url())
-        player = AVPlayer(playerItem: playerItem)
-        initializePlayer()
+        initializePlayer(playerItem: playerItem!)
         if !adStarted {
             currentPulseVideoAd?.adStarted()
         }
@@ -254,6 +267,7 @@ class VODViewModel: NSObject, ObservableObject, OOPulseSessionDelegate {
         let offset = currentPulseVideoAd!.skipOffset
         isShowingSkip = true
         skipEnabled = false
+        
         updateSkipTitle(remaining: Int(offset()))
 
         // check any existing timer

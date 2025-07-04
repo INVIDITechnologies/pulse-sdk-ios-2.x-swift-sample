@@ -42,13 +42,16 @@ class LiveViewModel: NSObject, ObservableObject, INPulseLiveSessionDelegate {
     var videoItem: VideoItem?
     @Published var skipButtonTitle = ""
     @Published var isShowingSkip = false
+    @Published var isShowingPrepareAd = true
     @Published var isShowingPlayingAd = true
+    @Published var isShowingExtendSession = true
     @Published var skipEnabled = false
     var playbackPosition : Array = [Float()]
     var extendedPlaybackPositions : Array = [Float()]
     var mAdBreaks : Array = [INPulseLiveAdBreak]()
     var midRollBreakIndex: Int = 0
     var currentIndex : Int = 0
+    var uiViewController: AVPlayerViewController?
     
     var timeObserverToken: Any?
        @Published var currentTime: CMTime = .zero
@@ -62,8 +65,14 @@ class LiveViewModel: NSObject, ObservableObject, INPulseLiveSessionDelegate {
     func initializePlayer() {
         guard let url = videoItem?.contentUrl else { return }
         playerItem = AVPlayerItem(url: url)
-        player = AVPlayer(playerItem: playerItem)
-        player!.play()
+        if(player !=  nil) {
+            player!.replaceCurrentItem(with: playerItem)
+            player!.play()
+        } else {
+            player = AVPlayer(playerItem: playerItem)
+        }
+//        player!.play()
+        uiViewController?.showsPlaybackControls = true
     }
     
     func loadPulseSession(video: VideoItem) {
@@ -92,10 +101,14 @@ class LiveViewModel: NSObject, ObservableObject, INPulseLiveSessionDelegate {
  
     // Custom Button Events
     func handlePreapareAdsClick() {
-        print("Request ads from AdBreak clicked")
-        if(midRollBreakIndex < playbackPosition.count-1) {
-            midRollBreakIndex += 1
+        print("Request ads from AdBreak clicked",midRollBreakIndex)
+        if(midRollBreakIndex < playbackPosition.count) {
+//            midRollBreakIndex += 1
+            if(playbackPosition[0] == 0.0) {
+                playbackPosition.removeFirst()
+            }
             let position: Float = playbackPosition[midRollBreakIndex]
+            midRollBreakIndex += 1
             var adBreak: INPulseLiveAdBreak?
             adBreak = liveSession?.getAdBreak(OOAdBreakType.MIDROLL,atIndex: position)
             print("Triggered getAdBreak for playback position - \(position) ")
@@ -120,7 +133,9 @@ class LiveViewModel: NSObject, ObservableObject, INPulseLiveSessionDelegate {
                 // Play Fetched Ad fro AdBreak.
                 playAdContent()
                 mAdBreaks.remove(at: 0)
+                isShowingPrepareAd = false
                 isShowingPlayingAd = false
+                isShowingExtendSession = false
             } else {
                 print("No ads to show.")
             }
@@ -136,15 +151,15 @@ class LiveViewModel: NSObject, ObservableObject, INPulseLiveSessionDelegate {
         ooContentMetadata = OOContentMetadata()
         ooContentMetadata!.tags = videoItem?.tags
         // RequestSettings configuration
-        var updatedRequestSettings: OORequestSettings?
+        var updatedRequestSettings = OORequestSettings()
         var newPlaybackPositions : Array = [Float()]
 //        updatedRequestSettings?.userAgentForThirdPartyRequests = OOUserAgentFormat.IAB
         newPlaybackPositions.append(!playbackPosition.isEmpty ? (playbackPosition.last! + 30) : 30)
         newPlaybackPositions.append(!playbackPosition.isEmpty ? (playbackPosition.last! + 60) : 60)
         newPlaybackPositions.removeFirst()
-        updatedRequestSettings?.linearPlaybackPositions = newPlaybackPositions
+        updatedRequestSettings.linearPlaybackPositions = newPlaybackPositions
         extendedPlaybackPositions = newPlaybackPositions
-        updatedRequestSettings?.insertionPointFilter = OOInsertionPointType.playbackPosition
+        updatedRequestSettings.insertionPointFilter = OOInsertionPointType.playbackPosition
         liveSession?.extend(with: ooContentMetadata, requestSettings: updatedRequestSettings, success: { /*[weak self] in*/
             print("Extension request successful")
         })
@@ -199,12 +214,15 @@ class LiveViewModel: NSObject, ObservableObject, INPulseLiveSessionDelegate {
     // Pulse Session Callbacks
     func sessionRequestSuccessful() {
         print("SessionRequest Successful")
+//        player?.pause()
         var liveAdBreak: INPulseLiveAdBreak?
         liveAdBreak = liveSession?.getAdBreak(OOAdBreakType.PREROLL)
         if(liveAdBreak != nil) {
             liveAdBreak?.getAllLinearAds { [weak self] ads in
                 if(ads!.count > 0) {
                     self?.prepareAdsForPlay(ads)
+                } else {
+                    self!.player!.play()
                 }
             }
         }
@@ -242,6 +260,7 @@ class LiveViewModel: NSObject, ObservableObject, INPulseLiveSessionDelegate {
                 print("Ad URL to play: \(String(describing: mediaFile.url()))")
                 playerItemPlaylist.append(AVPlayerItem(url: mediaFile.url()))
 //                playAdContent(videoAd: ad as! OOPulseVideoAd)
+                adIndex += 1
             }
         }
         if(!prepareAdClicked) {
@@ -250,11 +269,12 @@ class LiveViewModel: NSObject, ObservableObject, INPulseLiveSessionDelegate {
 //        observePlayerReady()
         if(adIndex > 0){
             if(midRollBreakIndex > 0) {
-                print("%d ads are added for adBreak %d at playback position %f", adIndex, midRollBreakIndex, playbackPosition[midRollBreakIndex - 1])
+                print("\(adIndex) ads are added for AdBreak \(midRollBreakIndex) at playback position \(playbackPosition[midRollBreakIndex-1])")
             } else {
-                print("%d ads are added for preRoll or postRoll adBreak.", adIndex)
+                print("\(adIndex) ads are added for preRoll or postRoll AdBreak at playback position \(playbackPosition[0])")
+                playbackPosition.removeFirst()
 //                if(!playAdClicked) {
-                    playAdContent()
+//                    playAdContent()
 //                }
             }
         }
@@ -265,9 +285,12 @@ class LiveViewModel: NSObject, ObservableObject, INPulseLiveSessionDelegate {
         playAd = false
         duringAd = false
         duringContent = true
+        isShowingPrepareAd = true
         isShowingPlayingAd = true
+        isShowingExtendSession = true
         stopAdProgressTracking()
         cleanupSkipState()
+        skipEnabled = true
         initializePlayer()
     }
     
@@ -295,6 +318,10 @@ class LiveViewModel: NSObject, ObservableObject, INPulseLiveSessionDelegate {
                        }
            }
        }
+    
+    func playerController(_ uiViewController: AVPlayerViewController) {
+        self.uiViewController = uiViewController
+    }
     
     // Player Observer
     func observePlayerReady() {
@@ -355,17 +382,22 @@ class LiveViewModel: NSObject, ObservableObject, INPulseLiveSessionDelegate {
     
     func playItem(at index: Int) {
             currentPulseVideoAd = adPlaylist[index]
-            currentPulseVideoAd?.adStarted()
             guard playerItemPlaylist.indices.contains(index) else { return }
             playerItem = playerItemPlaylist[index]
             player?.replaceCurrentItem(with: playerItem)
             player?.play()
+            if(uiViewController != nil) {
+               uiViewController!.showsPlaybackControls = false
+            }
+            currentPulseVideoAd?.adStarted()
             startAdProgressTracking()
             observePlayerReady()
             // Skip Ad trigger logic
             let offset = currentPulseVideoAd!.skipOffset
             isShowingSkip = true
+            isShowingPrepareAd = false
             isShowingPlayingAd = false
+            isShowingExtendSession = false
             skipEnabled = false
             updateSkipTitle(remaining: Int(offset()))
     }

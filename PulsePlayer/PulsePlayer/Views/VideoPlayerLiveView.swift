@@ -29,7 +29,7 @@ struct VideoPlayerLiveView: View {
     private var videoPlayerView: some View {
         Group {
             if let player = liveViewModel.player {
-                VideoPlayer(player: player)
+                AVPlayerControllerLive(player: player, liveViewModel: liveViewModel)
                     .onAppear {
 //                        liveViewModel.observePlayerReady()
                     }
@@ -47,11 +47,15 @@ struct VideoPlayerLiveView: View {
         VStack {
             Spacer()
             VStack(alignment: .leading, spacing: 12) {
-                controlButton(title: "Prepare Ads for next break", action:  liveViewModel.handlePreapareAdsClick)
+                if liveViewModel.isShowingPrepareAd {
+                    controlButton(title: "Prepare Ads for next break", action:  liveViewModel.handlePreapareAdsClick)
+                }
                 if liveViewModel.isShowingPlayingAd {
                     controlButton(title: "Play Ads", action: liveViewModel.handlePlayAdClick)
                 }
-                controlButton(title: "Extend Session", action: liveViewModel.handleExtendSessionClick)
+                if liveViewModel.isShowingExtendSession {
+                    controlButton(title: "Extend Session", action: liveViewModel.handleExtendSessionClick)
+                }
                 if liveViewModel.isShowingSkip {
                      controlButton(title: liveViewModel.skipButtonTitle, action: liveViewModel.handleSkipAdClick)
                 }
@@ -70,8 +74,23 @@ struct VideoPlayerLiveView: View {
                 .background(Color.white.opacity(0.8))
                 .foregroundColor(Color.black)
                 .cornerRadius(4)
+                .focusable()
         }
-//        .disabled(!liveViewModel.skipEnabled)
+        .disabled(!liveViewModel.skipEnabled)
     }
 }
 
+struct AVPlayerControllerLive : UIViewControllerRepresentable {
+    var player : AVPlayer
+    var liveViewModel = LiveViewModel()
+    
+    func makeUIViewController(context: Context) -> AVPlayerViewController {
+        let controller = AVPlayerViewController()
+        controller.player = player
+        return controller
+    }
+    
+    func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {
+        liveViewModel.playerController(uiViewController)
+    }
+}
